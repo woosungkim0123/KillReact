@@ -25,12 +25,50 @@
     onSubmit = (e) => {
       e.preventDefault();
       if (parseInt(this.state.value) === this.state.first * this.state.second) {
+        /* 현재 state랑 미래 state랑 헷갈릴 수 있음
         this.setState({
-          result: this.state.value + " 정답",
+          result: "정답 : " + this.state.value,
           first: Math.ceil(Math.random() * 9),
           second: Math.ceil(Math.random() * 9),
           value: "",
+        })*/ 
+        // 구별을 위한 api가 있음
+        // setstate안에 리턴을 함수를 넣어줌(새로운 state를 리턴하는 함수)
+        // 예전 상태값을 쉽게 표시해줄 수 있음
+        this.setState((prevState) => {
+          return {
+            result: "정답 : " + prevState.value,
+            first: Math.ceil(Math.random() * 9),
+            second: Math.ceil(Math.random() * 9),
+            value: "",
+          }
         })
+        /*
+        다른 예시
+        // 여러개의 setState를 연달아 가질 수 있는데 이경우 문제가 생김 
+        // setstate가 비동기라서.. 
+        this.setState({
+          value: this.state.value + 1,
+        })
+        this.setState({
+          value: this.state.value + 1,
+        })
+        this.setState({
+          value: this.state.value + 1,
+        })
+        // 예상하기로는 새로운 value가 기존value + 3 될거라 예상하지만
+        // 3이아니라 기존 value + 1이 될 수 있음
+        // 어려우니 한가지 원칙으로 기억
+        // 예전 state값으로 새로운 state를 만들때는 리턴해주는 함수를 쓰기
+        this.setState((prevState) => {
+          return {
+            value: prevState.value + 1,
+          }
+          
+        })
+        */
+        this.input.focus();
+        // 이게 document.querySelector(input) 하고 똑같음
       } else {
         this.setState({
           result: "땡",
@@ -41,13 +79,24 @@
     onChange = (e) => {
       this.setState({ value: e.target.value})
     }
+    // 이해 필요없고 걍외우는게 좋음
+    // hello면 this.hello로 접근가능
+    // 돔에 직접접근하고 싶을땐 ref라는걸 붙여서
+    input;
+    // 마지막
+    // state를 변경시 일어나는 현상
     render() {
-    
+      console.log('랜더링') // 처음 랜더링이 한번뜸
+      // 글자하나바뀌면 랜더링 출력. 즉 25를 입력하면 랜더링 글자가 두번뜸 그리고 입력누르면 또 랜더링
+      // setState를 할때는 렌더함수가 다시 실행되는구나..
+      // render를 너무 많이하면 느려지니 
+      // 그리고 ref처럼 안에 함수를 넣으면 setState든 뭐든 랜더링이 되면 함수가 계속 생기는거기떄문에 메서드로 빼는게 좋음
       return (
+        
         <React.Fragment>
           <div>{this.state.first} 곱하기 {this.state.second}는?</div>
           <form onSubmit={this.onSubmit}>
-            <input type="number" value={this.state.value} onChange={this.onChange}/>
+            <input ref={(c) => {this.input = c}} type="number" value={this.state.value} onChange={this.onChange}/>
             <button>입력!</button>
           </form>
           <div>{this.state.result}</div>
@@ -55,6 +104,18 @@
       )
     }
   }
+  /*react가 내부적으로 state를 바꾸면 화면을 저절로 바꿔줫음
+  우리가 input focus를 주고 싶을때는 어떻게 해야할까?
+  즉, state 변경된 뒤 focus!
+  document.querySelector('input').focus()
+  이런방법도 있지만
+  리액트 할때는 이건 거의 안씀
+  리액트가 화면을 컨트롤할 수 있게 해주는게 좋음
+  리액트가 화면을 만들어준다고 생각하고 저희는 데이터만 바꿔주는 걸로..
+
+  focus 하고 싶으면? ref 사용해보자
+  */
+
 </script>
 <script type="text/babel">
   ReactDOM.createRoot(document.querySelector('#root')).render(<div><GuGudan /><GuGudan /><GuGudan /></div>); 
@@ -65,3 +126,4 @@
 </body>
 </html>
 </html>
+
