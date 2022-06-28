@@ -12,15 +12,30 @@
 <script type="text/babel">
   'use strict'
   const GuGudan = () => { 
+    // 함수컴포넌트는 state가바뀌면 gugudan 함수 자체가 통째로 다시 실행됨
+    // 그래서 클래스형보다 조금 더 느릴  수 있다
+    // 안에 함수들이 다시 생성되는 건 어쩔 수 없는 문제
+    // 클래스는 render함수만 재실행됐었음
+    // react에서는 class를 못사용함 className 사용 => js엔진이 객체 클래스와 헷갈림, 
+    // for => htmlFor 라벨에 반복문 for이랑 헷갈림
+
     const [first, setFirst] = React.useState(Math.ceil(Math.random() * 9));
     const [second, setSecond] = React.useState(Math.ceil(Math.random() * 9));
     const [value, setValue] = React.useState("");
     const [result, setResult] = React.useState("");
-    const inputRef = React.useRef()
+    const inputRef = React.useRef(null)
     const onChange = (e) => setValue(e.target.value)
     const onSubmitForm = (e) => {
       e.preventDefault();
       if (parseInt(value) === first * second) {
+        // 옛날 state를 활용하는 경우는 class처럼 함수형으로 할 수 있음
+        // 이렇게 해줘야 비동기 문제가 발생하지 않는다
+        //setCount((c) => c + 1 )
+        // submit하면 렌더링4번되는거아니냐? => 1번일어남
+        // 리액트가 알아서 처리해줌 => 그래서 비동기인거
+        // 동기면 setReulst => 렌더 setFirst => 렌더 .. 렌더가 4번일어날텐데..
+        // 비동기인 이유가 setState를 모아서 한번에 처리함 => 렌더가 한번만 일어남
+        // 즉, 한번에 처리할려고 비동기로 했더니 비동기라서 문제가터짐 그래서 prev처럼 함수를 쓰는거!
         setResult("정답 : " + value)
         setFirst(Math.ceil(Math.random() * 9))
         setSecond(Math.ceil(Math.random() * 9))
