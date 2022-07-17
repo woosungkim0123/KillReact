@@ -1,7 +1,6 @@
 const path = require("path");
 
 module.exports = {
-  name: "wordrelay-setting",
   mode: "development",
   devtool: "eval",
   resolve: {
@@ -10,7 +9,6 @@ module.exports = {
   entry: {
     app: ["./client"],
   },
-
   module: {
     rules: [
       {
@@ -22,9 +20,8 @@ module.exports = {
       },
     ],
   },
-
   output: {
-    path: path.join(__dirname, "dist"),
     filename: "app.js",
+    path: path.join(__dirname, "dist"),
   },
 };
